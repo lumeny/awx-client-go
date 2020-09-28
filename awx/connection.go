@@ -28,8 +28,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/Flamacue/awx-client-go/awx/internal/data"
+	"github.com/golang/glog"
 )
 
 // Version is the version of the client.
@@ -249,6 +249,8 @@ func (b *ConnectionBuilder) Build() (c *Connection, err error) {
 	c.base = b.url
 	c.username = b.username
 	c.password = b.password
+	c.bearer = b.bearer
+	c.token = b.token
 	c.version = "v2"
 	c.client = client
 
