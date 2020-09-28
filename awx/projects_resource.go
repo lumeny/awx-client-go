@@ -22,7 +22,7 @@ package awx
 import (
 	"fmt"
 
-	"github.com/moolitayer/awx-client-go/awx/internal/data"
+	"github.com/Flamacue/awx-client-go/awx/internal/data"
 )
 
 type ProjectsResource struct {
