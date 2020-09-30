@@ -28,7 +28,7 @@ const (
 	JobStatusSuccesful JobStatus = "successful"
 	JobStatusFailed    JobStatus = "failed"
 	JobStatusError     JobStatus = "error"
-	JobStatusCancelled JobStatus = "cancelled"
+	JobStatusCancelled JobStatus = "canceled"
 )
 
 type Job struct {
