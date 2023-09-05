@@ -20,7 +20,7 @@ limitations under the License.
 package awx
 
 import (
-	"github.com/Flamacue/awx-client-go/awx/internal/data"
+	"github.com/CenturyLink/hca-awx-client-go/awx/internal/data"
 )
 
 type JobResource struct {

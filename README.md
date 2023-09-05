@@ -1,6 +1,11 @@
-# awx-client-go
+# hca-awx-client-go
 
-[![Build Status](https://travis-ci.org/moolitayer/awx-client-go.svg?branch=master)](https://travis-ci.org/moolitayer/awx-client-go)
+## History
+This is a fork of the defunct https://github.com/Flamacue/awx-client-go - which in turn was a fork of the defunct https://github.com/moolitayer/awx-client-go
+Team HCA needs to interact with workflow job templates, which is not supported by the original authors. 
+So this fork will be the go-forward client for HCA/Lumen, with no plans to submit changes back to the original defunct projects.
+
+
 
 A golang client library for [AWX](https://github.com/ansible/awx) and [Ansible Tower](https://www.ansible.com/products/tower) REST API.
 
@@ -8,13 +13,12 @@ A golang client library for [AWX](https://github.com/ansible/awx) and [Ansible T
 Install awx-client-go using the "go-get" command:
 ```
 go get github.com/golang/glog # Dependency
-go get github.com/moolitayer/awx-client-go/awx
 ```
 
 ## Usage
 ### import
 ```go
-import 	"github.com/moolitayer/awx-client-go/awx"
+import 	"github.com/CenturyLink/hca-awx-client-go/awx"
 ```
 
 ### Creating a connection:
@@ -54,8 +58,9 @@ When Username and Password are specified the client will attempt to acquire Toke
 - Projects
 - Jobs
 - Job Templates
+- Workflow Job Templates (added by Team HCA after fork)
 
-Please submit feature requests as Github [issues](https://github.com/moolitayer/awx-client-go/issues/new).
+Please submit feature requests as Github [issues](https://github.com/CenturyLink/hca-awx-client-go/issues/new).
 
 ### Retrieving resources
 ```go
@@ -124,7 +129,6 @@ See [examples](examples).
 ### Running Tests
 Install development dependencies:
 ```
-go get github.com/seborama/govcr
 go get golang.org/x/tools/cmd/goimports
 
 make

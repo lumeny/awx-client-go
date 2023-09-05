@@ -18,8 +18,6 @@ package awx
 
 import (
 	"testing"
-
-	"github.com/seborama/govcr"
 )
 
 func TestFilterHeader(t *testing.T) {
@@ -78,13 +76,6 @@ func TestOAUTH2Token(t *testing.T) {
 		t.Error(err)
 	}
 	defer connection.Close()
-	vcr := govcr.NewVCR("connection_oauth2",
-		&govcr.VCRConfig{
-			Client:           connection.client,
-			DisableRecording: true,
-		})
-	// Replace our HTTPClient with a vcr client wrapping it
-	connection.client = vcr.Client
 	projectsResource := connection.Projects()
 
 	// Trigger the auth flow.
@@ -105,7 +96,6 @@ func TestOAUTH2Token(t *testing.T) {
 	}
 }
 
-//
 // When the api/o endpoint is not available, the server should accquire a token
 // through api/v2/authtoken/
 func TestPreOAUTH2(t *testing.T) {
@@ -123,13 +113,6 @@ func TestPreOAUTH2(t *testing.T) {
 		t.Errorf("Error creating connection: %s", err)
 	}
 	defer connection.Close()
-	vcr := govcr.NewVCR("connection_pre_oauth2",
-		&govcr.VCRConfig{
-			Client:           connection.client,
-			DisableRecording: true,
-		})
-	// Replace our HTTPClient with a vcr client wrapping it
-	connection.client = vcr.Client
 	projectsResource := connection.Projects()
 
 	// Trigger the auth flow.

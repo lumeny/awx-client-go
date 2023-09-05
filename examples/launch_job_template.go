@@ -40,23 +40,23 @@ import (
 	"fmt"
 	"strings"
 
+	awx "github.com/CenturyLink/hca-awx-client-go/awx"
 	"github.com/golang/glog"
-	awx "github.com/moolitayer/awx-client-go/awx"
 )
 
 var (
-	url           string
-	username      string
-	password      string
-	proxy         string
-	insecure      bool
-	caFile        string
+	// url           string
+	// username      string
+	// password      string
+	// proxy         string
+	// insecure      bool
+	// caFile        string
 	project       string
 	template      string
 	limit         string
 	extraVarsFlag string
 
-//	extraVar map[string]interface{}
+	//	extraVar map[string]interface{}
 )
 
 func init() {

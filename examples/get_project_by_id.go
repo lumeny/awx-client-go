@@ -34,17 +34,17 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/moolitayer/awx-client-go/awx"
+	"github.com/CenturyLink/hca-awx-client-go/awx"
 )
 
 var (
-	url      string
-	username string
-	password string
-	proxy    string
-	insecure bool
-	caFile   string
-	id       int
+	// 	url      string
+	// 	username string
+	// 	password string
+	// 	proxy    string
+	// 	insecure bool
+	// 	caFile   string
+	id int
 )
 
 func init() {

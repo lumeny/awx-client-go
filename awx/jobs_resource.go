@@ -22,7 +22,7 @@ package awx
 import (
 	"fmt"
 
-	"github.com/Flamacue/awx-client-go/awx/internal/data"
+	"github.com/CenturyLink/hca-awx-client-go/awx/internal/data"
 )
 
 type JobsResource struct {

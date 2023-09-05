@@ -28,12 +28,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Flamacue/awx-client-go/awx/internal/data"
+	"github.com/CenturyLink/hca-awx-client-go/awx/internal/data"
 	"github.com/golang/glog"
 )
 
 // Version is the version of the client.
-//
 const Version = "0.0.0"
 
 type ConnectionBuilder struct {
@@ -99,7 +98,6 @@ func (b *ConnectionBuilder) Password(password string) *ConnectionBuilder {
 // Agent sets the value of the HTTP user agent header that the client will use in all
 // the requests sent to the server. This is optional, and the default value is the name
 // of the client followed by the version number, for example 'GoClient/0.0.1'.
-//
 func (b *ConnectionBuilder) Agent(agent string) *ConnectionBuilder {
 	b.agent = agent
 	return b
@@ -123,7 +121,6 @@ func (b *ConnectionBuilder) Insecure(insecure bool) *ConnectionBuilder {
 // CACertificates adds a list of CA certificates that will be trusted when verifying the
 // certificates presented by the AWX server. The certs parameter must be a list of PEM encoded
 // certificates.
-//
 func (b *ConnectionBuilder) CACertificates(certs []byte) *ConnectionBuilder {
 	if len(certs) > 0 {
 		b.caCerts = append(b.caCerts, certs)
@@ -134,7 +131,6 @@ func (b *ConnectionBuilder) CACertificates(certs []byte) *ConnectionBuilder {
 // CAFile sets the name of the file that contains the PEM encoded CA certificates that will be
 // trusted when verifying the certificate presented by the AWX server. It can be used multiple times
 // to specify multiple files.
-//
 func (b *ConnectionBuilder) CAFile(file string) *ConnectionBuilder {
 	if file != "" {
 		b.caFiles = append(b.caFiles, file)
@@ -263,19 +259,16 @@ func (b *ConnectionBuilder) Build() (c *Connection, err error) {
 }
 
 // Jobs returns a reference to the resource that manages the collection of jobs.
-//
 func (c *Connection) Jobs() *JobsResource {
 	return NewJobsResource(c, "jobs")
 }
 
 // JobTemplates returns a reference to the resource that manages the collection of job templates.
-//
 func (c *Connection) JobTemplates() *JobTemplatesResource {
 	return NewJobTemplatesResource(c, "job_templates")
 }
 
 // Projects returns a reference to the resource that manages the collection of projects.
-//
 func (c *Connection) Projects() *ProjectsResource {
 	return NewProjectsResource(c, "projects")
 }
@@ -286,7 +279,6 @@ func (c *Connection) Close() {
 
 // ensureToken makes sure that there is a token available. If there isn't, then it will request a
 // new onw to the server.
-//
 func (c *Connection) ensureToken() error {
 	if c.token != "" || c.bearer != "" {
 		return nil
@@ -295,7 +287,6 @@ func (c *Connection) ensureToken() error {
 }
 
 // getToken requests a new authentication token.
-//
 func (c *Connection) getToken() (err error) {
 	if c.OAuth2Supported() {
 		err = c.getPATToken()
@@ -359,7 +350,6 @@ func (c *Connection) getPATToken() error {
 }
 
 // makeURL calculates the absolute URL for the given relative path and query.
-//
 func (c *Connection) makeURL(path, prefix string, query url.Values) string {
 	// Allocate a buffer large enough for the longest possible URL:
 	buffer := new(bytes.Buffer)
@@ -614,7 +604,7 @@ func filterJsonBytes(bytes []byte) []byte {
 
 func filterJsonObject(object interface{}) interface{} {
 	switch object := object.(type) {
-	case map[string]interface{}: //JSON dicts
+	case map[string]interface{}: // JSON dicts
 		for key, val := range object {
 			if passwordFilterRegex.MatchString(key) {
 				object[key] = "REDACTED"
@@ -622,7 +612,7 @@ func filterJsonObject(object interface{}) interface{} {
 				object[key] = filterJsonObject(val)
 			}
 		}
-	case []interface{}: //JSON Arrays
+	case []interface{}: // JSON Arrays
 		for index, val := range object {
 			object[index] = filterJsonObject(val)
 		}
