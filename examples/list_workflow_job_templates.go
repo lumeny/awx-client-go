@@ -3,7 +3,7 @@
 // Use the following command to build and run it with all the debug output sent to the standard
 // error output:
 //
-//	go run list_job_templates.go \
+//	go run list_workflow_job_templates.go \
 //		-url "https://awx.example.com/api" \
 //		-authtoken "aValue" \
 //		-ca-file "ca.pem"
@@ -23,7 +23,9 @@ var (
 	// password string
 	// proxy    string
 	insecure bool
-	// 	caFile   string
+	//
+	//	caFile   string
+	//
 	authtoken string
 )
 
@@ -57,7 +59,7 @@ func main() {
 	defer connection.Close()
 
 	// Find the resource that manages the collection of job templates:
-	templatesResource := connection.JobTemplates()
+	templatesResource := connection.WorkflowJobTemplates()
 
 	// Send the request to get the list of job templates:
 	getTemplatesRequest := templatesResource.Get()

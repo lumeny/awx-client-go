@@ -1,19 +1,3 @@
-/*
-Copyright (c) 2018 Red Hat, Inc.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package awx
 
 import (
@@ -23,13 +7,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
 
 	"github.com/CenturyLink/hca-awx-client-go/awx/internal/data"
-	"github.com/golang/glog"
 )
 
 // Version is the version of the client.
@@ -268,6 +252,11 @@ func (c *Connection) JobTemplates() *JobTemplatesResource {
 	return NewJobTemplatesResource(c, "job_templates")
 }
 
+// WorkflowJobTemplates returns a reference to the resource that manages the collection of workflow job templates.
+func (c *Connection) WorkflowJobTemplates() *WorkflowJobTemplatesResource {
+	return NewWorkflowJobTemplatesResource(c, "workflow_job_templates")
+}
+
 // Projects returns a reference to the resource that manages the collection of projects.
 func (c *Connection) Projects() *ProjectsResource {
 	return NewProjectsResource(c, "projects")
@@ -310,9 +299,6 @@ func (c *Connection) OAuth2Supported() bool {
 }
 
 func (c *Connection) getAuthToken() error {
-	if glog.V(2) {
-		glog.Infoln("Requesting Authtoken")
-	}
 	var request data.AuthTokenPostRequest
 	var response data.AuthTokenPostResponse
 	request.Username = c.username
@@ -329,9 +315,6 @@ func (c *Connection) getAuthToken() error {
 }
 
 func (c *Connection) getPATToken() error {
-	if glog.V(2) {
-		glog.Infoln("Requesting OAuth2 PAT Token")
-	}
 	var request data.PATPostRequest
 	var response data.PATPostResponse
 	request.Description = "AWX Go Client"
@@ -407,13 +390,11 @@ func (c *Connection) rawHead(path, prefix string) (err error) {
 	c.setAgent(request)
 	c.setCredentials(request)
 	c.setAccept(request)
-	if glog.V(2) {
-		glog.Infof("Sending HEAD request to '%s'.", address)
-		glog.Info("Request headers:\n")
-		for key, val := range request.Header {
-			glog.Infof("	%s: %v", key, val)
-		}
-	}
+	// log.Printf("Sending HEAD request to '%s'.", address)
+	// log.Printf("Request headers:\n")
+	// for key, val := range request.Header {
+	// 	log.Printf("	%s: %v", key, val)
+	// }
 	response, err := c.client.Do(request)
 	if err != nil {
 		return
@@ -438,15 +419,11 @@ func (c *Connection) rawGet(path string, query url.Values) (output []byte, err e
 	c.setAgent(request)
 	c.setCredentials(request)
 	c.setAccept(request)
-	if glog.V(2) {
-		glog.Infof("Sending GET request to '%s'.", address)
-	}
-	if glog.V(3) {
-		glog.Info("Request headers:\n")
-		for key, val := range request.Header {
-			glog.Infof("	%s: %v", key, filterHeader(key, val))
-		}
-	}
+	// log.Printf("Sending GET request to '%s'.", address)
+	// log.Printf("Request headers:\n")
+	// for key, val := range request.Header {
+	// 	log.Printf("	%s: %v", key, filterHeader(key, val))
+	// }
 	response, err := c.client.Do(request)
 	if err != nil {
 		return
@@ -459,14 +436,11 @@ func (c *Connection) rawGet(path string, query url.Values) (output []byte, err e
 	if err != nil {
 		return
 	}
-	if glog.V(3) {
-		glog.Infof("Response body:\n%s", c.indent(filterJsonBytes(output)))
-		glog.Info("Response headers:")
-		for key, val := range response.Header {
-			glog.Infof("	%s: %v", key, filterHeader(key, val))
-		}
-
-	}
+	// log.Printf("Response body:\n%s", c.indent(filterJsonBytes(output)))
+	// log.Printf("Response headers:")
+	// for key, val := range response.Header {
+	// 	log.Printf("	%s: %v", key, filterHeader(key, val))
+	// }
 	if response.StatusCode > 202 {
 		err = fmt.Errorf(
 			"Status code '%d' returned from server: '%s'",
@@ -510,16 +484,12 @@ func (c *Connection) rawPost(path string, query url.Values, input []byte) (outpu
 	c.setCredentials(request)
 	c.setContentType(request)
 	c.setAccept(request)
-	if glog.V(2) {
-		glog.Infof("Sending POST request to '%s'.", address)
-	}
-	if glog.V(3) {
-		glog.Infof("Request body:\n%s", c.indent(filterJsonBytes(input)))
-		glog.Infof("Request headers:")
-		for key, val := range request.Header {
-			glog.Infof("	%s: %v", key, filterHeader(key, val))
-		}
-	}
+	// log.Printf("Sending POST request to '%s'.", address)
+	// log.Printf("Request body:\n%s", c.indent(filterJsonBytes(input)))
+	// log.Printf("Request headers:")
+	// for key, val := range request.Header {
+	// 	log.Printf("	%s: %v", key, filterHeader(key, val))
+	// }
 	response, err := c.client.Do(request)
 	if err != nil {
 		return
@@ -532,13 +502,11 @@ func (c *Connection) rawPost(path string, query url.Values, input []byte) (outpu
 	if err != nil {
 		return
 	}
-	if glog.V(3) {
-		glog.Infof("Response body:\n%s", c.indent(filterJsonBytes(output)))
-		glog.Info("Response headers:")
-		for key, val := range response.Header {
-			glog.Infof("	%s: %v", key, val)
-		}
-	}
+	// log.Printf("Response body:\n%s", c.indent(filterJsonBytes(output)))
+	// log.Printf("Response headers:")
+	// for key, val := range response.Header {
+	// 	log.Printf("	%s: %v", key, val)
+	// }
 	if response.StatusCode > 202 {
 		err = fmt.Errorf(
 			"Status code '%d' returned from server: '%s'",
@@ -590,13 +558,13 @@ func filterJsonBytes(bytes []byte) []byte {
 	var jsonObj interface{}
 	err := json.Unmarshal(bytes, &jsonObj)
 	if err != nil {
-		glog.Warningf("Error parsing: %v", err)
+		log.Printf("Error parsing: %v", err)
 		return []byte{}
 	}
 	jsonObj = filterJsonObject(jsonObj)
 	ret, err := json.Marshal(jsonObj)
 	if err != nil {
-		glog.Warningf("Error encoding: %v", err)
+		log.Printf("Error encoding: %v", err)
 		return []byte{}
 	}
 	return ret

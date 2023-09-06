@@ -1,18 +1,14 @@
-// This example shows how to launch a job template.
+// This example shows how to launch a workflow job template.
 //
 // Use the following command to build and run it with all the debug output sent to the standard
 // error output:
 //
-//	go run launch_job_template.go \
+//	go run launch_workflow_job_templates.go \
 //		-url "https://awx.example.com/api" \
-//		-username "admin" \
-//      -proxy "http://proxy.com:3128" \
-//		-password "..." \
-//		-ca-file "ca.pem" \
+//		-authtoken "aValue" \
 //      -project "project" \
-//		-template "template-name" \
-//		-limit "node0.openshift.private" \
-// 		-extra-vars "alertname=bla job=my-job complex={\"simple\":\"label\"}" \
+//		-template "Echo World" \
+// 		-extra-vars "cli_hostname=redhawk01-dev.corp.intranet"
 
 package main
 
@@ -27,30 +23,29 @@ import (
 )
 
 var (
-	url           string
-	username      string
-	password      string
-	proxy         string
-	insecure      bool
-	caFile        string
+	url string
+	// username      string
+	// password      string
+	// proxy         string
+	insecure bool
+	// caFile        string
 	project       string
 	template      string
 	limit         string
 	extraVarsFlag string
+	insecure      bool
+	authtoken     string
 
 	//	extraVar map[string]interface{}
 )
 
 func init() {
-	flag.StringVar(&url, "url", "https://awx.example.com/api", "API URL.")
-	flag.StringVar(&username, "username", "admin", "API user name.")
-	flag.StringVar(&password, "password", "password", "API user password.")
-	flag.StringVar(&proxy, "proxy", "", "API proxy URL.")
-	flag.BoolVar(&insecure, "insecure", false, "Don't verify server certificate.")
-	flag.StringVar(&caFile, "ca-file", "", "Trusted CA certificates.")
-	flag.StringVar(&project, "project", "", "Project Name.")
+	flag.StringVar(&url, "url", "https://ansible-awx.rke-odc-test.corp.intranet/api", "API URL.")
+	flag.StringVar(&authtoken, "authtoken", "provide-a-valid-token", "Auth token")
+	flag.BoolVar(&insecure, "insecure", true, "Don't verify server certificate.")
+	// flag.StringVar(&project, "project", "", "Project Name.")
 	flag.StringVar(&template, "template", "", "Template Name.")
-	flag.StringVar(&limit, "limit", "", "Hosts limit")
+	// flag.StringVar(&limit, "limit", "", "Hosts limit")
 	flag.StringVar(&extraVarsFlag, "extra-vars", "", "extra variables to the Job")
 }
 
@@ -77,10 +72,11 @@ func main() {
 	// Connect to the server, and remember to close the connection:
 	connection, err := awx.NewConnectionBuilder().
 		URL(url).
-		Username(username).
-		Password(password).
-		Proxy(proxy).
-		CAFile(caFile).
+		Bearer(authtoken).
+		// Username(username).
+		// Password(password).
+		// Proxy(proxy).
+		// CAFile(caFile).
 		Insecure(insecure).
 		Build()
 	if err != nil {
@@ -89,14 +85,14 @@ func main() {
 	defer connection.Close()
 
 	// Get the template by name
-	templatesResource := connection.JobTemplates()
+	templatesResource := connection.WorkflowJobTemplates()
 	templatesResponse, err := templatesResource.Get().
-		Filter("project__name", project).
+		// Filter("project__name", project).
 		Filter("name", template).
 		Send()
 
 	if err != nil {
-		fmt.Printf("Failed to get template resource %v\n", err)
+		fmt.Printf("Failed to get workflow job template resource %v\n", err)
 		return
 	}
 
@@ -109,9 +105,16 @@ func main() {
 		return
 	}
 
+	// TODO temp
+	if len(templatesResponse.Results()) > 1 {
+		log.Panicf("got %d templates by name %s", len(templatesResponse.Results()), template)
+	}
+	// TODO temp
+
 	// Launch all corresponding templated
 	for _, t := range templatesResponse.Results() {
-		launchResource := connection.JobTemplates().Id(t.Id()).Launch()
+		log.Printf("launching workflow job template id %d", t.Id())
+		launchResource := connection.WorkflowJobTemplates().Id(t.Id()).Launch()
 
 		if limit != "" && !t.AskLimitOnLaunch() {
 			log.Printf("About to launch template '%s' with limit '%s', but 'prompt-on-launch' is false. Limit will be ignored",
@@ -126,7 +129,7 @@ func main() {
 		response, err := launchResource.Post().
 			Limit(limit).
 			ExtraVars(extraVars).
-			ExtraVar("my-var", "example-val").
+			// ExtraVar("my-var", "example-val").
 			Send()
 		if err != nil {
 			fmt.Printf("Failed to get launch job %v\n", err)
@@ -134,7 +137,7 @@ func main() {
 		}
 
 		log.Printf(
-			"Request to launch AWX job from template '%s' has been sent, job identifier is '%v'",
+			"Request to launch AWX job from workflow job template '%s' has been sent, job identifier is '%v'",
 			template,
 			response.Job,
 		)

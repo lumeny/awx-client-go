@@ -15,11 +15,5 @@ $ go run list_job_templates.go \
 -url "https://awx.example.com/api" \
 -username "admin" \
 -password "..." \
--ca-file "ca.pem" \
--logtostderr \
--v=2
+-ca-file "ca.pem"
 ```
-
-Note that the `-logtostderr` and `-v=2` options aren't needed, but they are very
-convenient for development, as they ensure that all the HTTP traffic is dumped
-to the terminal.

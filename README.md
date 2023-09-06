@@ -9,11 +9,6 @@ So this fork will be the go-forward client for HCA/Lumen, with no plans to submi
 
 A golang client library for [AWX](https://github.com/ansible/awx) and [Ansible Tower](https://www.ansible.com/products/tower) REST API.
 
-## Installation
-Install awx-client-go using the "go-get" command:
-```
-go get github.com/golang/glog # Dependency
-```
 
 ## Usage
 ### import
@@ -28,10 +23,10 @@ connection, err := awx.NewConnectionBuilder().
   URL("http://awx.example.com/api").          // URL is mandatory
   Username(username).
   Password(password).
-  Token("TOKEN").
+  Token("TOKEN").                             // Preferred approach
   Bearer("BEARER").
   CAFile("/etc/pki/tls/cert.pem").
-  Insecure(insecure).
+  Insecure(insecure).                        // set to true because of self-signed certs 
   Proxy("http://myproxy.example.com").
   Build()                                    // Create the client
 if err != nil {
